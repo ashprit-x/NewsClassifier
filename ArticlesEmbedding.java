@@ -69,19 +69,15 @@ public class ArticlesEmbedding extends NewsArticles {
         String[] words = processedText.split(" "); // words in this article
         int pointer = 0;
         int wordVectorSize = AdvancedNewsClassifier.listGlove.get(0).getVector().getVectorSize();
-        double[][] temp = new double[this.intSize][wordVectorSize];
 
         newsEmbedding = Nd4j.create(intSize,wordVectorSize);
 
 
         for (String word : words) {
-            boolean isInGlove = false;
             for (Glove x : AdvancedNewsClassifier.listGlove) {
-                String currentVocab = x.getVocabulary();
 
-                if (currentVocab.equals(word)) {
+                if (x.getVocabulary().equals(word)) {
                     newsEmbedding.putRow(pointer++, Nd4j.create(x.getVector().getAllElements()));
-                    isInGlove = true;
                     break;
                 }
             }

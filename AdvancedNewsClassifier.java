@@ -95,32 +95,23 @@ public class AdvancedNewsClassifier {
         //TODO Task 6.2 - 5 Marks
         int[] arr = new int[_listEmbedding.size()];// doc lengths
         StringBuilder sb = new StringBuilder();
-
         for(Glove glove : listGlove){
             sb.append(glove.getVocabulary()).append(" ");
         }
-
+        String tester = sb.toString();
         int pointer = 0;
+
+
         for(ArticlesEmbedding article : _listEmbedding){
             int a = 0;
             for(String x : article.getNewsContent().split(" ")){
-
-                if(sb.indexOf(" "+x+" ")!=-1) a++;
+                // if the glove contains the word.
+                if(tester.contains(" "+x+" ")) a++;
             }
             arr[pointer++] = a;
         } // counts gloves vs article.
-              //Selection sort implementation
-        for(int i = 0; i<arr.length-1; i++){
-            int index = i;
-            for (int j = i+1; j < arr.length; j++) {
-                if(arr[index]>arr[j]){
-                    index = j;
-                }
-            }
-            int temp = arr[index];
-            arr[index] = arr[i];
-            arr[i] = temp;
-        }
+
+        mergeSort(arr);
 
         double x = (double) (arr.length + 1) / 2 ;
         if(arr.length % 2 == 0){
@@ -135,16 +126,69 @@ public class AdvancedNewsClassifier {
 
         return intMedian;
     }
+    private static void mergeSort(int[] num) {
+        int n = num.length;
+        if(n<2) return;
+        int mid = n/2;
+        int[] l = new int[mid];
+        int[] r = new int[n-mid];
+        for(int i = 0; i< mid; i++) {
+            l[i] = num[i];
+        }
+        for(int i = mid; i<n; i++) {
+            r[i-mid] = num[i];
+        }
+
+        mergeSort(l);
+        mergeSort(r);
+        merge(l, r, num);
+
+    }
+    private static void merge(int[] left, int[] right, int[] num) {
+        int leftSize = num.length/2;
+        int rightSize = num.length/2;
+        int i = 0, l = 0, r = 0;
+
+        while(l < leftSize && r < rightSize) {
+            if(left[l] < right[r]) {
+                num[i] = left[l];
+                i++;
+                l++;
+            }
+            else {
+                num[i]=right[r];
+                i++;
+                r++;
+            }
+        }
+        while(l<leftSize){
+            num[i] = left[l];
+            i++;
+            l++;
+        }
+        while(r<rightSize) {
+            num[i]=right[r];
+            i++;
+            r++;
+        }
+
+    }
 
     public void populateEmbedding() {
         //TODO Task 6.3 - 10 Marks
 
-
+        int x = -1;
         for(ArticlesEmbedding article : listEmbedding){
             try {
-                article.getEmbedding();
+                if(article.getEmbedding() == null){
+                    article.getEmbedding();
+                }
+
             } catch (InvalidSizeException f){
-                article.setEmbeddingSize(this.calculateEmbeddingSize(listEmbedding));
+                if(x==-1){
+                    x = this.calculateEmbeddingSize(listEmbedding);
+                }
+                article.setEmbeddingSize(x);
             } catch (InvalidTextException g){
                 article.getNewsContent();
             } catch (Exception e) {
