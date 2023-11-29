@@ -177,18 +177,13 @@ public class AdvancedNewsClassifier {
     public void populateEmbedding() {
         //TODO Task 6.3 - 10 Marks
 
-        int x = -1;
         for(ArticlesEmbedding article : listEmbedding){
             try {
                 if(article.getEmbedding() == null){
                     article.getEmbedding();
                 }
-
             } catch (InvalidSizeException f){
-                if(x==-1){
-                    x = this.calculateEmbeddingSize(listEmbedding);
-                }
-                article.setEmbeddingSize(x);
+                article.setEmbeddingSize(embeddingSize);
             } catch (InvalidTextException g){
                 article.getNewsContent();
             } catch (Exception e) {
@@ -205,6 +200,33 @@ public class AdvancedNewsClassifier {
         INDArray outputNDArray = null;
 
         //TODO Task 6.4 - 8 Marks
+
+        //input is the .getEmbedding 5.4
+        //output -> shape of array is .create(1,_numberofClasses);
+        // 2 newsgroups then create 1,2 etc.
+        //assign the value 0 to it.
+        //for a specific document assign the value 1 to the FIRST ELEMENT
+        //ONLY if the first element belongs to the firstGroup -> newsLabel = "1" string.
+        //else second element is 1.
+        //Traverse the Training data using the getNewsType from 2.3 from listEmbeddings.
+        //initialise the corresponding DataSet
+        // DataSet myDataSet = new DataSet(input,output).
+        //add it to the listDS
+        //code should handle more than 2 newsGroups.
+
+        for(ArticlesEmbedding article : listEmbedding){
+            if(article.getNewsType()== NewsArticles.DataType.Training){
+                inputNDArray = article.getEmbedding();
+                int[][] arr = new int[1][_numberOfClasses];
+                arr[0][Integer.parseInt(article.getNewsLabel())-1] = 1;
+
+                outputNDArray = Nd4j.create(arr);
+                DataSet myDataSet = new DataSet(inputNDArray,outputNDArray);
+                listDS.add(myDataSet);
+
+            }
+
+        }
 
         return new ListDataSetIterator(listDS, BATCHSIZE);
     }
@@ -239,13 +261,59 @@ public class AdvancedNewsClassifier {
     public List<Integer> predictResult(List<ArticlesEmbedding> _listEmbedding) throws Exception {
         List<Integer> listResult = new ArrayList<>();
         //TODO Task 6.5 - 8 Marks
+        //label -> .getLabel from HTMLParser in 3.2
+        //myNeuralNetwork should predict labels for the Testing Data
+        //use the .predict method. parameters (inputArray from listDS)
+        //it outputs an int arr 0 = first 1 = second.
 
+        for(ArticlesEmbedding article : _listEmbedding){
+            if(article.getNewsType()== NewsArticles.DataType.Testing){
+                int[] arr = myNeuralNetwork.predict(article.getEmbedding());
+                for(int x : arr){
+                    article.setNewsLabel(String.valueOf(x+1));
+                    listResult.add(x);
 
+                }
+
+            }
+        }
         return listResult;
     }
 
     public void printResults() {
         //TODO Task 6.6 - 6.5 Marks
+
+
+        //traverse the listResults
+        //get article title.
+        // etc.
+
+
+        List<String> labels = new ArrayList<>(); // arr contianign labels
+        for(ArticlesEmbedding article :listEmbedding){
+            if(!labels.contains(article.getNewsLabel())){
+                labels.add(article.getNewsLabel());
+            }
+        }
+
+        try {
+
+            for (String label : labels){
+                System.out.println("Group "+label);
+                for(ArticlesEmbedding article : listEmbedding) {
+                    if (article.getNewsType() == NewsArticles.DataType.Testing) {
+                        if (label.equals(article.getNewsLabel())) {
+                            //add into group of labels
+                            System.out.println(article.getNewsTitle());
+
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         
     }
 }

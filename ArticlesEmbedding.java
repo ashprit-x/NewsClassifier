@@ -51,7 +51,7 @@ public class ArticlesEmbedding extends NewsArticles {
             }
 
         }
-        processedText = sb.toString();
+        processedText = sb.toString().toLowerCase();
 
         return processedText.trim();
     } // needs to be reduced in terms of runtime
