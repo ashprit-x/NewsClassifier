@@ -94,7 +94,7 @@ public class AdvancedNewsClassifier {
         int intMedian = -1;
         //TODO Task 6.2 - 5 Marks
         int[] arr = new int[_listEmbedding.size()];// doc lengths
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(" ");
         for(Glove glove : listGlove){
             sb.append(glove.getVocabulary()).append(" ");
         }
@@ -113,14 +113,12 @@ public class AdvancedNewsClassifier {
 
         mergeSort(arr);
 
-        double x = (double) (arr.length + 1) / 2 ;
+        int x = (arr.length + 1) / 2 ;
         if(arr.length % 2 == 0){
-
-            intMedian = (arr[arr.length/2] + arr[(int) Math.round(x)])/2;
+            intMedian = (arr[arr.length/2] + arr[(arr.length/2)+1])/2 ;
         }
         else{
-
-            intMedian = arr[(int) Math.round(x)];
+            intMedian = arr[x];
         }
 
 
@@ -200,7 +198,7 @@ public class AdvancedNewsClassifier {
         INDArray outputNDArray = null;
 
         //TODO Task 6.4 - 8 Marks
-
+        System.out.println(_numberOfClasses);
         //input is the .getEmbedding 5.4
         //output -> shape of array is .create(1,_numberofClasses);
         // 2 newsgroups then create 1,2 etc.

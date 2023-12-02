@@ -1,6 +1,5 @@
 package uob.oop;
 
-import javax.xml.crypto.Data;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -68,9 +67,21 @@ public class Toolkit {
         List<NewsArticles> listNews = new ArrayList<>();
         //TODO Task 4.2 - 5 Marks
 
-        File dir = new File("src/main/resources/News");
+        File dir = new File("src/main/resources/News"); // ask jizeng
         File[] fileList = dir.listFiles();
+
+        // sort files here.
+
         if(fileList != null){
+            for (int i = 0; i < fileList.length - 1; i++) {
+                for (int j = 0; j < fileList.length - i - 1; j++) {
+                    if (fileList[j].getName().compareTo(fileList[j + 1].getName()) > 0) {
+                        File temp = fileList[j];
+                        fileList[j] = fileList[j + 1];
+                        fileList[j + 1] = temp;
+                    }
+                }
+            }
             for(File file : fileList){
                 if(file.getName().endsWith(".htm")){
                     StringBuilder sb = new StringBuilder();
@@ -99,6 +110,7 @@ public class Toolkit {
 
         return listNews;
     }
+
 
     public static List<String> getListVocabulary() {
         return listVocabulary;

@@ -31,7 +31,7 @@ public class ArticlesEmbedding extends NewsArticles {
     public String getNewsContent() {
         //TODO Task 5.3 - 10 Marks
         if(!processedText.isEmpty()){
-            return processedText;
+            return processedText.trim();
         }
         String cleaned = textCleaning(super.getNewsContent());
         Properties props = new Properties();
@@ -65,7 +65,7 @@ public class ArticlesEmbedding extends NewsArticles {
             throw new InvalidTextException("Invalid text");
         }
 
-        if(!newsEmbedding.isEmpty()) return newsEmbedding;
+        if(!newsEmbedding.isEmpty()) return Nd4j.vstack(newsEmbedding.mean(1));
         String[] words = processedText.split(" "); // words in this article
         int pointer = 0;
         int wordVectorSize = AdvancedNewsClassifier.listGlove.get(0).getVector().getVectorSize();
