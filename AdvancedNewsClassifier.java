@@ -198,7 +198,6 @@ public class AdvancedNewsClassifier {
         INDArray outputNDArray = null;
 
         //TODO Task 6.4 - 8 Marks
-        System.out.println(_numberOfClasses);
         //input is the .getEmbedding 5.4
         //output -> shape of array is .create(1,_numberofClasses);
         // 2 newsgroups then create 1,2 etc.
